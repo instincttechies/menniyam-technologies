@@ -1,1 +1,27 @@
-from enum import Enum\nfrom dataclasses import dataclass\n\nclass Status(str, Enum):\n    DRAFT = \"draft\"\n    APPROVED = \"approved\"\n    PUBLISHED = \"published\"\n    REJECTED = \"rejected\"\n\n@dataclass\nclass MarketingDraft:\n    platform: str\n    account_id: str\n    caption: str\n    status: Status = Status.DRAFT\n    approver_user_id: str | None = None\n\ndef approve(draft: MarketingDraft, user_id: str) -> MarketingDraft:\n    draft.status = Status.APPROVED\n    draft.approver_user_id = user_id\n    return draft\n\ndef publish_guard(draft: MarketingDraft):\n    if draft.status != Status.APPROVED:\n        raise PermissionError(\"Draft requires authorized user approval before publishing\")\n    # TODO: integrate official LinkedIn or Meta APIs after OAuth/app review.\n    raise NotImplementedError(\"Platform API publisher is not yet configured\")\n
+from enum import Enum
+from dataclasses import dataclass
+
+class Status(str, Enum):
+    DRAFT = \"draft\"
+    APPROVED = \"approved\"
+    PUBLISHED = \"published\"
+    REJECTED = \"rejected\"
+
+@dataclass
+class MarketingDraft:
+    platform: str
+    account_id: str
+    caption: str
+    status: Status = Status.DRAFT
+    approver_user_id: str | None = None
+
+def approve(draft: MarketingDraft, user_id: str) -> MarketingDraft:
+    draft.status = Status.APPROVED
+    draft.approver_user_id = user_id
+    return draft
+
+def publish_guard(draft: MarketingDraft):
+    if draft.status != Status.APPROVED:
+        raise PermissionError(\"Draft requires authorized user approval before publishing\")
+    # TODO: integrate official LinkedIn or Meta APIs after OAuth/app review.
+    raise NotImplementedError(\"Platform API publisher is not yet configured\")
